@@ -15,10 +15,10 @@ class CO2Sensor:
     serial: Serial
 
     def __init__(
-            self,
-            port: str,
-            baudrate: int = 9600,
-            timeout: float = 0.2,
+        self,
+        port: str,
+        baudrate: int = 9600,
+        timeout: float = 0.2,
     ):
         """
         Setup CO2 sensor
@@ -31,18 +31,18 @@ class CO2Sensor:
         self.serial = Serial(port=port, baudrate=baudrate, timeout=timeout)
         self.serial.open()
 
-    READ_CO2 = [0xff, 0x01, 0x86, 0x00, 0x00, 0x00, 0x00, 0x00]
-    ZERO_CALIBRATION = [0xff, 0x01, 0x87, 0x00, 0x00, 0x00, 0x00, 0x00]
-    SPAN_CALIBRATION = [0xff, 0x01, 0x88, 0x00, 0x00, 0x00, 0x00, 0x00]
-    AUTO_CALIBRATION = [0xff, 0x01, 0x79, 0xa0, 0x00, 0x00, 0x00, 0x00]
-    AUTO_CALIBRATION_OFF = [0xff, 0x01, 0x79, 0x00, 0x00, 0x00, 0x00, 0x00]
+    READ_CO2 = [0xFF, 0x01, 0x86, 0x00, 0x00, 0x00, 0x00, 0x00]
+    ZERO_CALIBRATION = [0xFF, 0x01, 0x87, 0x00, 0x00, 0x00, 0x00, 0x00]
+    SPAN_CALIBRATION = [0xFF, 0x01, 0x88, 0x00, 0x00, 0x00, 0x00, 0x00]
+    AUTO_CALIBRATION = [0xFF, 0x01, 0x79, 0xA0, 0x00, 0x00, 0x00, 0x00]
+    AUTO_CALIBRATION_OFF = [0xFF, 0x01, 0x79, 0x00, 0x00, 0x00, 0x00, 0x00]
 
     @staticmethod
     def _checksum(data: bytes | List[int]) -> int:
         """
         Calculate _checksum of the command.
         """
-        return 0xff - (sum(data) % 256) + 1
+        return 0xFF - (sum(data) % 256) + 1
 
     def _write_command(self, command: List[int]):
         """
@@ -86,12 +86,17 @@ class CO2Sensor:
         """
         self._write_command(self.READ_CO2)
         response = self._read_response()
-        if response[0] != 0xff or response[1] != 0x86:
+        if response[0] != 0xFF or response[1] != 0x86:
             raise ValueError("Invalid response")
         elif response[8] != self._checksum(response[:8]):
             raise ValueError("Invalid checksum")
 
-        return response[2] * 256 + response[3], response[4] - 40, response[5], response[6]
+        return (
+            response[2] * 256 + response[3],
+            response[4] - 40,
+            response[5],
+            response[6],
+        )
 
     def zero_calibration(self):
         """
