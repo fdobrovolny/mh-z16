@@ -41,7 +41,7 @@ class CO2Sensor:
         """
         Calculate _checksum of the command.
         """
-        return 0xFF - (sum(data) % 256) + 1
+        return 0xFF - (sum(data[1:]) % 256) + 1
 
     def _write_command(self, command: List[int]):
         """
