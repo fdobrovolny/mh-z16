@@ -47,8 +47,7 @@ class CO2Sensor:
         """
         Write command to the sensor.
         """
-        command.append(self._checksum(command))
-        self.serial.write(command)
+        self.serial.write(command + [self._checksum(command)])
 
     def _read_response(self) -> bytes:
         """
