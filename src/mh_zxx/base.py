@@ -1,5 +1,5 @@
 import logging
-from typing import List, Tuple
+from typing import List, Tuple, Union
 
 from serial import Serial
 
@@ -37,7 +37,7 @@ class CO2Sensor:
     AUTO_CALIBRATION_OFF = [0xFF, 0x01, 0x79, 0x00, 0x00, 0x00, 0x00, 0x00]
 
     @staticmethod
-    def _checksum(data: bytes | List[int]) -> int:
+    def _checksum(data: Union[bytes, List[int]]) -> int:
         """
         Calculate _checksum of the command.
         """
