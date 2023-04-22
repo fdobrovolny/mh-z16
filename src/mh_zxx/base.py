@@ -29,7 +29,6 @@ class CO2Sensor:
         :param timeout: Read timeout after each command.
         """
         self.serial = Serial(port=port, baudrate=baudrate, timeout=timeout)
-        self.serial.open()
 
     READ_CO2 = [0xFF, 0x01, 0x86, 0x00, 0x00, 0x00, 0x00, 0x00]
     ZERO_CALIBRATION = [0xFF, 0x01, 0x87, 0x00, 0x00, 0x00, 0x00, 0x00]
