@@ -78,15 +78,18 @@ class CO2Sensor:
         Read all values.
 
         :note: last value is auto calibration point, see
-        :link: https://revspace.nl/MH-Z19#Command_set
+        :link: https://revspace.nl/MHZ19#Command_set
 
         :return: CO2 concentration, temperature, status, co2 auto calibration point
         """
+        logger.debug("Reading values from sensor")
         self._write_command(self.READ_CO2)
         response = self._read_response()
         if response[0] != 0xFF or response[1] != 0x86:
+            logger.error("Invalid response: %s" % response)
             raise ValueError("Invalid response")
         elif response[8] != self._checksum(response[:8]):
+            logger.error("Invalid checksum: %s" % response)
             raise ValueError("Invalid checksum")
 
         return (
@@ -100,12 +103,14 @@ class CO2Sensor:
         """
         Zero calibration.
         """
+        logger.info("Zero calibration")
         self._write_command(self.ZERO_CALIBRATION)
 
     def span_calibration(self, span: int):
         """
         Span calibration.
         """
+        logger.info("Span calibration to %d" % span)
         command = self.SPAN_CALIBRATION.copy()
         command[3] = span // 256
         command[4] = span % 256
@@ -115,6 +120,7 @@ class CO2Sensor:
         """
         Set auto calibration point.
         """
+        logger.info("Setting auto calibration to %s" % state)
         if state:
             self._write_command(self.AUTO_CALIBRATION)
         else:
@@ -124,4 +130,5 @@ class CO2Sensor:
         """
         Close serial port.
         """
+        logger.info("Closing serial port")
         self.serial.close()
